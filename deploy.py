@@ -9,6 +9,7 @@
 # ============================================================================
 
 import subprocess
+import sys
 
 # Auto-upgrade frontblok-deploy before importing
 subprocess.run(
@@ -17,6 +18,10 @@ subprocess.run(
     shell=True, check=False,
 )
 
-from frontblok_deploy import FrontendDeployer
+from frontblok_deploy import FrontendDeployer, DeploymentError
 
-FrontendDeployer.from_config().deploy()
+try:
+    FrontendDeployer.from_config().deploy()
+except (DeploymentError, Exception) as e:
+    print(f"\n\u274c DEPLOYMENT FAILED: {e}")
+    sys.exit(1)

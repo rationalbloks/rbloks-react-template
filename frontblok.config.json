@@ -1,4 +1,6 @@
 {
+    "service_name": "frontend",
+    "create_namespace": false,
     "vite_args": [
         "VITE_DATABASE_API_URL",
         "VITE_API_URL",
