@@ -4,9 +4,10 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Box, Toolbar } from '@mui/material';
 import { ClientAuthProvider, useClientAuth, authApi, generateOAuthNonce } from './services/datablokApi';
+import { ProtectedRoute } from '@rationalbloks/frontblok-auth';
 
-// Theme (local, not from external packages)
-import { createAppTheme } from './theme';
+// Theme (from @rationalbloks/frontblok-components)
+import { createAppTheme } from '@rationalbloks/frontblok-components';
 
 // Branding configuration
 import { BRANDING } from './config/branding';
@@ -17,6 +18,7 @@ import {
   ForgotPasswordView as BaseForgotPasswordView,
   ResetPasswordView as BaseResetPasswordView,
   VerifyEmailView as BaseVerifyEmailView,
+  SettingsView as BaseSettingsView,
   SupportView,
   ErrorBoundary,
 } from '@rationalbloks/frontblok-components';
@@ -43,10 +45,14 @@ const VerifyEmailView = () => (
   <BaseVerifyEmailView authApi={authApi} successRoute="/dashboard" errorRoute="/settings" />
 );
 
+// Pre-configured settings view
+const SettingsView = () => (
+  <BaseSettingsView authApi={authApi} useAuth={useClientAuth} />
+);
+
 // Template-specific views
 import HomeView from './components/views/HomeView';
 import DashboardView from './components/views/DashboardView';
-import SettingsView from './components/views/SettingsView';
 
 // Application-specific components
 import Navbar from './config/Navbar';
@@ -66,17 +72,6 @@ const queryClient = new QueryClient({
 // The core theme already includes the warm beige background, professional typography, etc.
 // Pass overrides here if you need app-specific customization
 const theme = createAppTheme();
-
-// Protected Route Component
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated } = useClientAuth();
-  
-  if (!isAuthenticated) {
-    return <Navigate to="/auth" replace />;
-  }
-  
-  return <>{children}</>;
-};
 
 // App Router Component
 const AppRouter = () => {
@@ -118,17 +113,17 @@ const AppRouter = () => {
           
           {/* Protected Routes */}
           <Route path="/dashboard" element={
-            <ProtectedRoute>
+            <ProtectedRoute useAuth={useClientAuth}>
               <DashboardView />
             </ProtectedRoute>
           } />
           <Route path="/settings" element={
-            <ProtectedRoute>
+            <ProtectedRoute useAuth={useClientAuth}>
               <SettingsView />
             </ProtectedRoute>
           } />
           <Route path="/support" element={
-            <ProtectedRoute>
+            <ProtectedRoute useAuth={useClientAuth}>
               <SupportView />
             </ProtectedRoute>
           } />

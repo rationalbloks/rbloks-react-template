@@ -10,13 +10,13 @@
 // ============================================================================
 
 import { 
-  createAuthApi, 
+  createAuthApi,
+  createApiUrl,
   createAuthProvider, 
   useAuth, 
   getStoredUser, 
   getStoredToken, 
   isAuthenticated,
-  // OAuth nonce generator
   generateOAuthNonce
 } from '@rationalbloks/frontblok-auth';
 import { initApi, getApi } from '@rationalbloks/frontblok-crud';
@@ -25,7 +25,6 @@ import type { User } from '@rationalbloks/frontblok-auth';
 // ============================================================================
 // RE-EXPORTS
 // ============================================================================
-// Centralized imports for convenience
 
 export { getStoredUser, getStoredToken, isAuthenticated };
 export { generateOAuthNonce };
@@ -35,20 +34,11 @@ export { getApi };
 // ============================================================================
 // AUTH API SINGLETON
 // ============================================================================
-// Single instance for all authentication operations.
-// Also used by frontblok-crud for authenticated API requests.
+// createApiUrl() handles env var resolution + dev fallback automatically.
+// In production, VITE_DATABASE_API_URL is injected via Docker --build-arg.
+// This logic lives in the package so it stays correct across npm updates.
 
-// In production, VITE_DATABASE_API_URL is injected as a Docker build arg.
-// The localhost fallback is ONLY for local development.
-const API_URL = import.meta.env.VITE_DATABASE_API_URL || (
-  import.meta.env.DEV ? 'http://localhost:8000' : ''
-);
-
-if (!API_URL && import.meta.env.PROD) {
-  console.error('[RationalBloks] VITE_DATABASE_API_URL not set — API calls will fail. This is a build configuration issue.');
-}
-
-export const authApi = createAuthApi(API_URL);
+export const authApi = createAuthApi(createApiUrl());
 
 // Initialize frontblok-crud with authApi for authenticated requests
 initApi(authApi);
