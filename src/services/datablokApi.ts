@@ -11,8 +11,7 @@
 
 import { 
   createAuthApi,
-  createApiUrl,
-  createAuthProvider, 
+  createAuthProvider,
   useAuth, 
   getStoredUser, 
   getStoredToken, 
@@ -36,9 +35,9 @@ export { getApi };
 // ============================================================================
 // Resolve API URL directly from import.meta.env — this runs in the APP's
 // Vite build where VITE_DATABASE_API_URL is correctly injected via Docker
-// build-args. Do NOT rely on the library's createApiUrl() because Vite
-// statically replaces import.meta.env.* during library builds, baking in
-// empty values. The env resolution MUST happen HERE in the consuming app.
+// build-args. The library cannot read it: Vite statically replaces
+// import.meta.env.* during a library build, baking in empty values. The env
+// resolution MUST happen HERE in the consuming app.
 
 const datablokApiUrl = import.meta.env.VITE_DATABASE_API_URL 
   || import.meta.env.VITE_API_URL 

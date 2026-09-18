@@ -38,6 +38,9 @@ export const BRANDING = {
   
   // Security badge text
   securityBadge: 'Secure Access',
+
+  // The address the Support page writes a request to
+  supportEmail: 'support@example.com',
 } as const;
 
 export type Branding = typeof BRANDING;

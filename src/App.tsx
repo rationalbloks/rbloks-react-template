@@ -124,7 +124,7 @@ const AppRouter = () => {
           } />
           <Route path="/support" element={
             <ProtectedRoute useAuth={useClientAuth}>
-              <SupportView />
+              <SupportView supportEmail={BRANDING.supportEmail} />
             </ProtectedRoute>
           } />
           
