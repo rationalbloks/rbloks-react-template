@@ -17,9 +17,9 @@ A clean, production-ready React template with authentication and CRUD operations
 
 | Package | Purpose |
 |---------|---------|
-| `@rationalbloks/frontblok-auth` | Authentication (login, register, OAuth, tokens) |
-| `@rationalbloks/frontblok-crud` | CRUD operations (list, get, create, update, delete) |
-| `@rationalbloks/frontblok-components` | Reusable UI (AuthView, ErrorBoundary, ConfirmationModal, Navbar) |
+| `@rationalbloks/frontblok/auth` | Authentication (login, register, OAuth, tokens) |
+| `@rationalbloks/frontblok/crud` | CRUD operations (list, get, create, update, delete) |
+| `@rationalbloks/frontblok/components` | Reusable UI (AuthView, ErrorBoundary, ConfirmationModal, Navbar) |
 | `@tanstack/react-query` | Server state management |
 | `@mui/material` | UI components |
 | `react-router-dom` | Routing |
@@ -65,9 +65,9 @@ src/
 ```
 
 **External packages provide:**
-- `@rationalbloks/frontblok-auth` - Authentication (login, register, OAuth, tokens)
-- `@rationalbloks/frontblok-crud` - CRUD operations (list, get, create, update, delete)
-- `@rationalbloks/frontblok-components` - Reusable UI (AuthView, ErrorBoundary, Navbar factory, etc.)
+- `@rationalbloks/frontblok/auth` - Authentication (login, register, OAuth, tokens)
+- `@rationalbloks/frontblok/crud` - CRUD operations (list, get, create, update, delete)
+- `@rationalbloks/frontblok/components` - Reusable UI (AuthView, ErrorBoundary, Navbar factory, etc.)
 
 ## ⚙️ Configuration
 
@@ -185,4 +185,4 @@ MIT License - feel free to use this template for any project.
 
 ## 🙏 Credits
 
-Built with [frontblok-auth](https://www.npmjs.com/package/@rationalbloks/frontblok-auth) and [frontblok-crud](https://www.npmjs.com/package/@rationalbloks/frontblok-crud).
+Built with [@rationalbloks/frontblok](https://www.npmjs.com/package/@rationalbloks/frontblok).

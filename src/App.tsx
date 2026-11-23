@@ -4,15 +4,15 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Box, Toolbar } from '@mui/material';
 import { ClientAuthProvider, useClientAuth, authApi, generateOAuthNonce } from './services/datablokApi';
-import { ProtectedRoute } from '@rationalbloks/frontblok-auth';
+import { ProtectedRoute } from '@rationalbloks/frontblok/auth';
 
-// Theme (from @rationalbloks/frontblok-components)
-import { createAppTheme } from '@rationalbloks/frontblok-components';
+// Theme (from @rationalbloks/frontblok/components)
+import { createAppTheme } from '@rationalbloks/frontblok/components';
 
 // Branding configuration
 import { BRANDING } from './config/branding';
 
-// General components (from @rationalbloks/frontblok-components)
+// General components (from @rationalbloks/frontblok/components)
 import {
   AuthView as BaseAuthView,
   ForgotPasswordView as BaseForgotPasswordView,
@@ -21,7 +21,7 @@ import {
   SettingsView as BaseSettingsView,
   SupportView,
   ErrorBoundary,
-} from '@rationalbloks/frontblok-components';
+} from '@rationalbloks/frontblok/components';
 
 // Pre-configured auth views
 const AuthView = () => (

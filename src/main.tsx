@@ -1,11 +1,11 @@
 // ========================================================================
 // APP ENTRY POINT
 // ========================================================================
-// Uses createAppRoot from @rationalbloks/frontblok-auth
+// Uses createAppRoot from @rationalbloks/frontblok/auth
 // Styling is local to this application
 // ========================================================================
 
-import { createAppRoot } from '@rationalbloks/frontblok-auth';
+import { createAppRoot } from '@rationalbloks/frontblok/auth';
 import './styles/globals.css';
 import App from './App';
 

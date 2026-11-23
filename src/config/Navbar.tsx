@@ -11,7 +11,7 @@ import {
   Home as HomeIcon,
   Dashboard as DashboardIcon,
 } from '@mui/icons-material';
-import { createNavbar, NavigationItem } from '@rationalbloks/frontblok-components';
+import { createNavbar, NavigationItem } from '@rationalbloks/frontblok/components';
 import { useClientAuth } from '../services/datablokApi';
 import { navbarGradient } from '../theme';
 

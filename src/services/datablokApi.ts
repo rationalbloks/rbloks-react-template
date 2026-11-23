@@ -17,9 +17,9 @@ import {
   getStoredToken, 
   isAuthenticated,
   generateOAuthNonce
-} from '@rationalbloks/frontblok-auth';
-import { initApi, getApi } from '@rationalbloks/frontblok-crud';
-import type { User } from '@rationalbloks/frontblok-auth';
+} from '@rationalbloks/frontblok/auth';
+import { initApi, getApi } from '@rationalbloks/frontblok/crud';
+import type { User } from '@rationalbloks/frontblok/auth';
 
 // ============================================================================
 // RE-EXPORTS
@@ -49,7 +49,7 @@ if (!datablokApiUrl && !import.meta.env.DEV) {
 
 export const authApi = createAuthApi(datablokApiUrl);
 
-// Initialize frontblok-crud with authApi for authenticated requests
+// Initialize frontblok/crud with authApi for authenticated requests
 initApi(authApi);
 
 // ============================================================================
@@ -84,7 +84,7 @@ export type UpdateTaskInput = Partial<CreateTaskInput>;
 // ============================================================================
 // ENTITY NAMES
 // ============================================================================
-// Constants for frontblok-crud CRUD operations - avoids typos.
+// Constants for frontblok/crud CRUD operations - avoids typos.
 // Update these to match your backend entity names.
 
 export const ENTITIES = {
@@ -97,7 +97,7 @@ export const ENTITIES = {
 // ============================================================================
 // AUTH CONTEXT
 // ============================================================================
-// App-specific auth provider using frontblok-auth's factory.
+// App-specific auth provider using frontblok/auth's factory.
 // Creates React context for authentication state management.
 
 export const ClientAuthProvider = createAuthProvider(authApi);
