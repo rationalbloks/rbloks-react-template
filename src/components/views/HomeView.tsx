@@ -1,8 +1,8 @@
-// ========================================================================
+// ============================================================================
 // HOME VIEW
-// ========================================================================
+// ============================================================================
 // Landing page for the application.
-// ========================================================================
+// ============================================================================
 
 import { useNavigate } from 'react-router-dom';
 import {
@@ -79,9 +79,9 @@ export default function HomeView() {
         <Typography variant="h4" textAlign="center" fontWeight={600} mb={4}>
           Built With
         </Typography>
-        <Stack 
-          direction={{ xs: 'column', md: 'row' }} 
-          spacing={3} 
+        <Stack
+          direction={{ xs: 'column', md: 'row' }}
+          spacing={3}
           justifyContent="center"
         >
           {[

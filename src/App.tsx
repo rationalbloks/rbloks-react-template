@@ -1,18 +1,16 @@
+// ============================================================================
+// APP
+// ============================================================================
+// The providers (React Query, the theme, the router, the session) and the routes: public pages, the
+// authentication flow, and the pages that need a signed-in user.
+// ============================================================================
+
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Box, Toolbar } from '@mui/material';
-import { ClientAuthProvider, useClientAuth, authApi, generateOAuthNonce } from './services/datablokApi';
 import { ProtectedRoute } from '@rationalbloks/frontblok/auth';
-
-// Theme (from @rationalbloks/frontblok/components)
-import { createAppTheme } from '@rationalbloks/frontblok/components';
-
-// Branding configuration
-import { BRANDING } from './config/branding';
-
-// General components (from @rationalbloks/frontblok/components)
 import {
   AuthView as BaseAuthView,
   ForgotPasswordView as BaseForgotPasswordView,
@@ -22,8 +20,18 @@ import {
   SupportView,
   ErrorBoundary,
 } from '@rationalbloks/frontblok/components';
+import { ClientAuthProvider, useClientAuth, authApi, generateOAuthNonce } from './services/datablokApi';
+import { BRANDING } from './config/branding';
+import { theme } from './theme';
+import Navbar from './config/Navbar';
+import HomeView from './components/views/HomeView';
+import DashboardView from './components/views/DashboardView';
 
-// Pre-configured auth views
+// ============================================================================
+// AUTH AND SETTINGS VIEWS
+// ============================================================================
+// frontblok's views, given this app's API, session and branding
+
 const AuthView = () => (
   <BaseAuthView
     branding={BRANDING}
@@ -45,19 +53,14 @@ const VerifyEmailView = () => (
   <BaseVerifyEmailView authApi={authApi} successRoute="/dashboard" errorRoute="/settings" />
 );
 
-// Pre-configured settings view
 const SettingsView = () => (
   <BaseSettingsView authApi={authApi} useAuth={useClientAuth} />
 );
 
-// Template-specific views
-import HomeView from './components/views/HomeView';
-import DashboardView from './components/views/DashboardView';
+// ============================================================================
+// QUERY CLIENT
+// ============================================================================
 
-// Application-specific components
-import Navbar from './config/Navbar';
-
-// Create React Query client
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -68,29 +71,27 @@ const queryClient = new QueryClient({
   },
 });
 
-// Create theme using the universal beautiful defaults from core
-// The core theme already includes the warm beige background, professional typography, etc.
-// Pass overrides here if you need app-specific customization
-const theme = createAppTheme();
+// ============================================================================
+// ROUTES AND PROVIDERS
+// ============================================================================
 
-// App Router Component
 const AppRouter = () => {
   const { isAuthenticated } = useClientAuth();
 
   return (
-    <Box sx={{ 
-      display: 'flex', 
-      flexDirection: 'column', 
+    <Box sx={{
+      display: 'flex',
+      flexDirection: 'column',
       minHeight: '100vh',
       width: '100%',
       maxWidth: '100vw',
-      overflow: 'hidden' 
+      overflow: 'hidden'
     }}>
       <Navbar />
-      
-      <Box 
-        component="main" 
-        sx={{ 
+
+      <Box
+        component="main"
+        sx={{
           flexGrow: 1,
           width: '100%',
           maxWidth: '100%',
@@ -105,12 +106,12 @@ const AppRouter = () => {
           <Route path="/auth" element={
             isAuthenticated ? <Navigate to="/dashboard" replace /> : <AuthView />
           } />
-          
+
           {/* Authentication Flow Routes (Public) */}
           <Route path="/forgot-password" element={<ForgotPasswordView />} />
           <Route path="/reset-password" element={<ResetPasswordView />} />
           <Route path="/verify-email" element={<VerifyEmailView />} />
-          
+
           {/* Protected Routes */}
           <Route path="/dashboard" element={
             <ProtectedRoute useAuth={useClientAuth}>
@@ -127,7 +128,7 @@ const AppRouter = () => {
               <SupportView supportEmail={BRANDING.supportEmail} />
             </ProtectedRoute>
           } />
-          
+
           {/* Redirect unknown routes */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
@@ -138,7 +139,7 @@ const AppRouter = () => {
 
 function App() {
   return (
-    <ErrorBoundary supportEmail="support@example.com">
+    <ErrorBoundary supportEmail={BRANDING.supportEmail}>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
           <CssBaseline />

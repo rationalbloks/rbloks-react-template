@@ -1,6 +1,6 @@
 # RBloks React Template
 
-A clean, production-ready React template with authentication and CRUD operations built-in.
+A clean, production-ready React template with authentication and CRUD operations built-in, for a rationalbloks API.
 
 ## 🚀 Features
 
@@ -8,8 +8,8 @@ A clean, production-ready React template with authentication and CRUD operations
 - **Vite 7** - Lightning fast build tool
 - **TypeScript** - Type-safe development
 - **MUI v7** - Beautiful Material Design components
-- **Authentication Ready** - Login, register, Google OAuth, password reset
-- **CRUD Operations** - Ready-to-use API client for database operations
+- **Authentication Ready** - Login, register, Google OAuth, password reset, email verification
+- **CRUD Operations** - Ready-to-use API client for your tables
 - **Beautiful Theme** - Professional warm beige design with customizable theme
 - **Responsive Navbar** - Configurable navigation with auth state handling
 
@@ -18,8 +18,8 @@ A clean, production-ready React template with authentication and CRUD operations
 | Package | Purpose |
 |---------|---------|
 | `@rationalbloks/frontblok/auth` | Authentication (login, register, OAuth, tokens) |
-| `@rationalbloks/frontblok/crud` | CRUD operations (list, get, create, update, delete) |
-| `@rationalbloks/frontblok/components` | Reusable UI (AuthView, ErrorBoundary, ConfirmationModal, Navbar) |
+| `@rationalbloks/frontblok/crud` | CRUD operations (`getAll`, `getOne`, `create`, `update`, `remove`) and their React hooks |
+| `@rationalbloks/frontblok/components` | Reusable UI (AuthView, ErrorBoundary, SupportView, the Navbar factory, the theme) |
 | `@tanstack/react-query` | Server state management |
 | `@mui/material` | UI components |
 | `react-router-dom` | Routing |
@@ -28,16 +28,16 @@ A clean, production-ready React template with authentication and CRUD operations
 
 ```bash
 # Clone the template
-git clone https://github.com/velosovictor/rbloks-react-template.git my-app
+git clone https://github.com/rationalbloks/rbloks-react-template.git my-app
 cd my-app
 
-# Install dependencies
-npm install
+# Install the locked dependency tree
+npm ci
 
-# Copy environment file
+# Copy the environment file, then set VITE_DATABASE_API_URL to your API's URL
 cp .env.example .env
 
-# Start development server
+# Start the development server
 npm run dev
 ```
 
@@ -45,35 +45,31 @@ npm run dev
 
 ```
 src/
-├── App.tsx                    # Main app with routes
+├── App.tsx                    # Providers and routes
 ├── main.tsx                   # Entry point
+├── vite-env.d.ts              # The build variables the app reads
 ├── components/
-│   ├── shared/                # Shared utility components (if any)
 │   └── views/                 # Application-specific views
 │       ├── DashboardView.tsx
-│       ├── HomeView.tsx
-│       └── SettingsView.tsx
+│       └── HomeView.tsx
 ├── config/
-│   ├── branding.ts            # App branding configuration
+│   ├── branding.ts            # App branding
 │   └── Navbar.tsx             # Navbar configuration
 ├── services/
 │   └── datablokApi.ts         # API service (auth + CRUD)
 ├── styles/
-│   └── globals.css            # Global styles + CSS variables
+│   └── globals.css            # The page box (colors and fonts come from the theme)
 └── theme/
-    └── index.ts               # MUI theme configuration
+    └── index.ts               # MUI theme
 ```
 
-**External packages provide:**
-- `@rationalbloks/frontblok/auth` - Authentication (login, register, OAuth, tokens)
-- `@rationalbloks/frontblok/crud` - CRUD operations (list, get, create, update, delete)
-- `@rationalbloks/frontblok/components` - Reusable UI (AuthView, ErrorBoundary, Navbar factory, etc.)
+The settings, support and authentication pages are frontblok's views, configured in `App.tsx`.
 
 ## ⚙️ Configuration
 
 ### 1. Environment Variables
 
-Edit `.env` with your backend URL:
+Edit `.env` with your API's URL (the project page shows it, as does the MCP tool `get_project_info`):
 
 ```env
 VITE_DATABASE_API_URL=https://your-api.example.com
@@ -92,7 +88,6 @@ const BRAND_CONFIG = {
 
 const PUBLIC_NAV_ITEMS: NavigationItem[] = [
   { id: '/', label: 'Home', icon: <HomeIcon /> },
-  { id: '/pricing', label: 'Pricing', icon: <PricingIcon /> },
 ];
 
 const AUTHENTICATED_NAV_ITEMS: NavigationItem[] = [
@@ -127,8 +122,8 @@ export const ENTITIES = {
 ```tsx
 import { getApi, ENTITIES, Product } from '../services/datablokApi';
 
-// List all products
-const products = await getApi().list<Product>(ENTITIES.PRODUCTS);
+// List the products
+const products = await getApi().getAll<Product>(ENTITIES.PRODUCTS);
 
 // Create a product
 const newProduct = await getApi().create<Product>(ENTITIES.PRODUCTS, {
@@ -142,42 +137,35 @@ await getApi().update<Product>(ENTITIES.PRODUCTS, productId, {
 });
 
 // Delete a product
-await getApi().delete(ENTITIES.PRODUCTS, productId);
+await getApi().remove(ENTITIES.PRODUCTS, productId);
 ```
+
+In a component, `useEntityList`, `useEntity` and `useMutation` from `@rationalbloks/frontblok/crud` do the same with
+loading and error state.
 
 ## 🎨 Theming
 
-Customize the theme in `src/theme/index.ts`:
+The theme is frontblok's defaults with your overrides, in `src/theme/index.ts`:
 
 ```tsx
-export const palette = {
-  primary: {
-    main: '#1e40af', // Your brand color
-  },
-  background: {
-    default: 'hsl(33.3, 60%, 97.1%)', // Warm beige
-  },
-};
-
-// Or use the factory with overrides
-const theme = createAppTheme({
+export const theme = createAppTheme({
   paletteOverrides: {
-    primary: { main: '#your-color' },
+    primary: { main: '#1e40af' }, // Your brand color
   },
 });
 ```
 
 ## 🚢 Deployment
 
-The template includes Docker and Kubernetes configurations:
+Deploy it as a **module** of your rationalbloks project. Push your copy to GitHub, then add it to the project as a
+stateless FrontBlok module from its repository: in the app, from the project in **My Projects**, or with the MCP tool
+`deploy_module` (`module_type: "frontblok"`). rationalbloks builds it on your project's resource pool from
+`frontblok.config.json` and the committed `package-lock.json` (the build installs with `npm ci`), and serves it on
+its own HTTPS host under your pool's domain.
 
-```bash
-# Build Docker image
-docker build -t my-app .
-
-# Deploy to Kubernetes
-python3 deploy.py
-```
+Set the module's variables there: `VITE_DATABASE_API_URL` is required (your API's URL), and every name in
+`vite_args` reaches the build. Names starting with `DEPLOY_` are reserved for the deployment. A new commit ships with
+a redeploy of the module.
 
 ## 📝 License
 

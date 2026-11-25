@@ -1,28 +1,13 @@
-// ========================================================================
-// THEME CONFIGURATION
-// ========================================================================
-// Re-exports the universal theme factory from @rationalbloks/frontblok/components.
-// Local overrides (navbarGradient, custom palette) stay here.
-//
-// The core theme (palette, typography, component overrides) now lives in
-// the package and can be updated via npm update.
-// ========================================================================
-
-// Re-export the package theme factory and defaults
-export { 
-  createAppTheme, 
-  defaultPalette as palette,
-  defaultTypography as typography,
-  defaultComponents as components,
-  defaultNavbarGradient as navbarGradient,
-} from '@rationalbloks/frontblok/components';
-export type { AppThemeOptions } from '@rationalbloks/frontblok/components';
-
-// ========================================================================
-// DEFAULT THEME EXPORT
-// ========================================================================
+// ============================================================================
+// THEME
+// ============================================================================
+// The app's MUI theme: frontblok's defaults (palette, typography, component overrides) with this
+// app's overrides. App.tsx applies it; the navbar takes navbarGradient.
+// ============================================================================
 
 import { createAppTheme } from '@rationalbloks/frontblok/components';
 
+export { defaultNavbarGradient as navbarGradient } from '@rationalbloks/frontblok/components';
+
+// This app's overrides go here, e.g. createAppTheme({ paletteOverrides: { primary: { main: '#1e40af' } } })
 export const theme = createAppTheme();
-export default theme;

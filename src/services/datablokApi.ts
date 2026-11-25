@@ -1,23 +1,16 @@
 // ============================================================================
 // API SERVICE
 // ============================================================================
-// Authentication and CRUD operations.
+// The app's one connection to its rationalbloks API: the session (frontblok/auth) and the rows of
+// every table (frontblok/crud).
 //
 // Setup:
-// 1. Define your entity types below (matching your backend schema)
-// 2. Add entity names to ENTITIES constant
-// 3. Use getApi().list(), getApi().create(), etc. for CRUD operations
+// 1. Define your entity types below (matching your schema)
+// 2. Add each table's name to ENTITIES
+// 3. Read and write rows with getApi(): getAll, getOne, create, update, remove
 // ============================================================================
 
-import { 
-  createAuthApi,
-  createAuthProvider,
-  useAuth, 
-  getStoredUser, 
-  getStoredToken, 
-  isAuthenticated,
-  generateOAuthNonce
-} from '@rationalbloks/frontblok/auth';
+import { createAuthApi, createAuthProvider, useAuth, generateOAuthNonce } from '@rationalbloks/frontblok/auth';
 import { initApi, getApi } from '@rationalbloks/frontblok/crud';
 import type { User } from '@rationalbloks/frontblok/auth';
 
@@ -25,38 +18,25 @@ import type { User } from '@rationalbloks/frontblok/auth';
 // RE-EXPORTS
 // ============================================================================
 
-export { getStoredUser, getStoredToken, isAuthenticated };
-export { generateOAuthNonce };
+export { generateOAuthNonce, getApi };
 export type { User };
-export { getApi };
 
 // ============================================================================
 // AUTH API SINGLETON
 // ============================================================================
-// Resolve API URL directly from import.meta.env — this runs in the APP's
-// Vite build where VITE_DATABASE_API_URL is correctly injected via Docker
-// build-args. The library cannot read it: Vite statically replaces
-// import.meta.env.* during a library build, baking in empty values. The env
-// resolution MUST happen HERE in the consuming app.
+// VITE_DATABASE_API_URL is read here, in the app's own build, where Vite replaces it with the value the
+// build was given (a library build would bake in an empty value). Unset, the app stops at start with a
+// message naming it: createAuthApi refuses an empty URL.
 
-const datablokApiUrl = import.meta.env.VITE_DATABASE_API_URL 
-  || import.meta.env.VITE_API_URL 
-  || (import.meta.env.DEV ? 'http://localhost:8000' : '');
+export const authApi = createAuthApi(import.meta.env.VITE_DATABASE_API_URL);
 
-if (!datablokApiUrl && !import.meta.env.DEV) {
-  console.error('[RationalBloks] VITE_DATABASE_API_URL is not set. API calls will fail.');
-}
-
-export const authApi = createAuthApi(datablokApiUrl);
-
-// Initialize frontblok/crud with authApi for authenticated requests
+// Every getApi() call goes through authApi's session
 initApi(authApi);
 
 // ============================================================================
 // APP-SPECIFIC TYPES
 // ============================================================================
-// Define TypeScript interfaces for your application entities.
-// These should match your backend schema.
+// TypeScript interfaces for your tables, matching your schema.
 
 // Example entity - replace with your own
 export interface Task {
@@ -84,21 +64,18 @@ export type UpdateTaskInput = Partial<CreateTaskInput>;
 // ============================================================================
 // ENTITY NAMES
 // ============================================================================
-// Constants for frontblok/crud CRUD operations - avoids typos.
-// Update these to match your backend entity names.
+// Your tables' names, in one place (a typo is then a type error).
 
 export const ENTITIES = {
   TASKS: 'tasks',
   // Add more entities as needed:
   // PROJECTS: 'projects',
-  // USERS: 'users',
 } as const;
 
 // ============================================================================
 // AUTH CONTEXT
 // ============================================================================
-// App-specific auth provider using frontblok/auth's factory.
-// Creates React context for authentication state management.
+// The React context of the session, made by frontblok/auth's factory.
 
 export const ClientAuthProvider = createAuthProvider(authApi);
 export const useClientAuth = useAuth;
@@ -106,12 +83,11 @@ export const useClientAuth = useAuth;
 // ============================================================================
 // USAGE EXAMPLES
 // ============================================================================
-// 
-// List all tasks:
-//   const tasks = await getApi().list<Task>(ENTITIES.TASKS);
+// List the tasks:
+//   const tasks = await getApi().getAll<Task>(ENTITIES.TASKS);
 //
-// Get a single task:
-//   const task = await getApi().get<Task>(ENTITIES.TASKS, taskId);
+// Read one task:
+//   const task = await getApi().getOne<Task>(ENTITIES.TASKS, taskId);
 //
 // Create a task:
 //   const newTask = await getApi().create<Task>(ENTITIES.TASKS, { title: 'New Task' });
@@ -120,6 +96,5 @@ export const useClientAuth = useAuth;
 //   const updated = await getApi().update<Task>(ENTITIES.TASKS, taskId, { status: 'completed' });
 //
 // Delete a task:
-//   await getApi().delete(ENTITIES.TASKS, taskId);
-//
+//   await getApi().remove(ENTITIES.TASKS, taskId);
 // ============================================================================
